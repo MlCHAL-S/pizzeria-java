@@ -57,6 +57,11 @@ class PizzaShopCustomer {
                 }
             } else {
                 log.warn("Customer waiting for pizza...");
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -108,5 +113,28 @@ class PizzaShopCustomer {
                 ", pizzaOrder=" + (pizzaOrder != null ? pizzaOrder.recipe.name() : "none yet") +
                 ", seated=" + (table!=null) +
                 '}';
+    }
+    public void sitHere(PizzaShopTable pizzaShopTable){
+        table = pizzaShopTable;
+        var t = new Thread(this::startThread);
+        try {
+            t.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void startThread() {
+        while (this.isSeated()) {
+            try {
+                update();
+            } catch (RuntimeException exception) {
+                log.error(exception.getMessage());
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
