@@ -1,9 +1,13 @@
 package pl.edu.uksw.java.pizza;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
 class PizzaShopCustomer {
+    private static final Logger log = LoggerFactory.getLogger(PizzaApp.class);
     Pizza pizza;
     PizzaOrder pizzaOrder;
     PizzaShopTable table;
@@ -52,7 +56,7 @@ class PizzaShopCustomer {
                     leave();
                 }
             } else {
-                System.out.println("Customer waiting for pizza...");
+                log.warn("Customer waiting for pizza...");
             }
         }
     }

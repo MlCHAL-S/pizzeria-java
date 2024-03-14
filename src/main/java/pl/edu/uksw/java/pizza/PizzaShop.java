@@ -1,11 +1,15 @@
 package pl.edu.uksw.java.pizza;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 class PizzaShop {
+    private static final Logger log = LoggerFactory.getLogger(PizzaApp.class);
     List<PizzaOrder> orders = new ArrayList<>();
     List<Pizza> pizzas = new ArrayList<>();
     List<PizzaRecipe> menu;
@@ -47,7 +51,7 @@ class PizzaShop {
         if (freeTable.isPresent()) {
             PizzaShopTable pizzaShopTable = freeTable.get();
             pizzaShopTable.seatCustomer(customer);
-            System.out.println(pizzaShopTable);
+            log.info("seated_customer: " + pizzaShopTable);
             orders.add(customer.getNewOrder(getMenu()));
             return true;
         }
@@ -84,7 +88,7 @@ class PizzaShop {
         for (PizzaShopWorker worker : workers) {
             boolean didSomeWork = worker.update();
             if (!didSomeWork) {
-                System.out.println("Idle worker");
+                log.warn("Idle worker");
             }
         }
 
@@ -107,7 +111,7 @@ class PizzaShop {
             if (seatCustomer(customer)) {
                 iterator.remove();
             } else {
-                System.out.println("Customer waiting for a free table...");
+                log.warn("Customer waiting for a free table...");
             }
 
         }
@@ -119,8 +123,8 @@ class PizzaShop {
 
                 table.getCustomer().update();
             }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+        } catch (RuntimeException exception) {
+            log.error(exception.getMessage());
         }
     }
 
